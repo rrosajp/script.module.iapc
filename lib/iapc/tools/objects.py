@@ -22,7 +22,7 @@ class Type(type):
         namespace.setdefault(
             "__getattr_error__", f"'{name}' object has no attribute '{{}}'"
         )
-        for _name_, _func_ in namespace.pop("__transform__", dict()).items():
+        for _name_, _func_ in namespace.pop("__transform__", {}).items():
             namespace[_name_] = __property__(_name_, _func_)
         for _type_, _func_ in cls.__transform__.items():
             for _name_ in namespace.pop(_type_, set()):
@@ -39,9 +39,7 @@ class Object(object, metaclass=Type):
 
     def __new__(cls, data, **kwargs):
         if isinstance(data, dict):
-            if not data:
-                return None
-            return super(Object, cls).__new__(cls)
+            return None if not data else super(Object, cls).__new__(cls)
         return data
 
     def __init__(self, data, **kwargs):

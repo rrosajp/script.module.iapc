@@ -51,9 +51,7 @@ def localizedString(id):
 
 
 def maybeLocalize(value):
-    if isinstance(value, int):
-        return localizedString(value)
-    return value
+    return localizedString(value) if isinstance(value, int) else value
 
 
 __media_path__ = join("resources", "media")
