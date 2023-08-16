@@ -128,7 +128,7 @@ class Server(HTTPServer):
     def __init__(self, id, timeout=-1):
         self.logger = Logger(id, component="httpd")
         self.timeout = None if timeout < 0 else timeout
-        self.methods = {k: v for k, v in self.__methods__(self)}
+        self.methods = dict(self.__methods__(self))
         RequestHandler.server_version = f"{id}/{getAddonVersion()}"
         super(Server, self).__init__(self.__localhost__(), RequestHandler)
         self.logger.info(f"started on: {self.server_address}")
@@ -146,8 +146,7 @@ class Server(HTTPServer):
         except KeyError:
             request.send_error(404)
         else:
-            result = method(**parseQuery(url.query))
-            if result:
+            if result := method(**parseQuery(url.query)):
                 return request.process_content(*result)
             request.send_error(500)
 
