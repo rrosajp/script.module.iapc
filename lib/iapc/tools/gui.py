@@ -3,7 +3,8 @@
 
 __all__ = [
     "getWindowId", "selectDialog", "inputDialog", "contextMenu",
-    "browseDialog", "browseFiles", "infoDialog", "ListItem"
+    "browseDialog", "browseFiles", "infoDialog", "yesnoDialog",
+    "okDialog", "ListItem"
 ]
 
 
@@ -57,6 +58,18 @@ def browseFiles(**kwargs):
 
 def infoDialog(item):
     return xbmcgui.Dialog().info(item)
+
+
+# yesno ------------------------------------------------------------------------
+
+def yesnoDialog(message, heading=getAddonName(), **kwargs):
+    return xbmcgui.Dialog().yesno(maybeLocalize(heading), message, **kwargs)
+
+
+# ok ---------------------------------------------------------------------------
+
+def okDialog(message, heading=getAddonName()):
+    return xbmcgui.Dialog().ok(maybeLocalize(heading), message)
 
 
 # listitem ---------------------------------------------------------------------
