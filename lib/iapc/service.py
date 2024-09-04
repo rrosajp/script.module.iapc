@@ -10,7 +10,7 @@ from uuid import uuid4
 
 import xbmc
 
-from .tools import addonEnabled, executeJSONRPC, getAddonId, Logger
+from nuttig import addonEnabled, executeJSONRPC, getAddonId, Logger
 
 
 # ------------------------------------------------------------------------------

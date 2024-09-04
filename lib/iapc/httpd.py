@@ -9,7 +9,7 @@ from socket import socket, AF_INET, SOCK_STREAM, SHUT_RDWR
 from traceback import format_exc
 from urllib.parse import urlparse
 
-from .tools import Logger, getAddonVersion, parseQuery
+from nuttig import Logger, getAddonVersion, parseQuery
 
 
 # http -------------------------------------------------------------------------
