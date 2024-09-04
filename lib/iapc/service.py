@@ -10,7 +10,18 @@ from uuid import uuid4
 
 import xbmc
 
-from .tools import executeJSONRPC, getAddonId, Logger
+from .tools import addonEnabled, executeJSONRPC, getAddonId, Logger
+
+
+# ------------------------------------------------------------------------------
+# AddonNotAvailable
+
+class AddonNotAvailable(Exception):
+
+    def __init__(self, id):
+        super(AddonNotAvailable, self).__init__(
+            f"addon '{id}' is not installed or not enabled"
+        )
 
 
 # ------------------------------------------------------------------------------
@@ -145,7 +156,13 @@ class Attribute(object):
 class Client(object):
 
     def __init__(self, id=None):
-        self.id = id or getAddonId()
+        if id:
+            if addonEnabled(id):
+                self.id = id
+            else:
+                raise AddonNotAvailable(id)
+        else:
+            self.id = getAddonId()
 
     def __getattr__(self, name):
         return Attribute(self.id, name)

@@ -6,7 +6,6 @@
 
     <requires>
         <import addon="xbmc.python" version="3.0.1" />
-        <import addon="xbmc.addon" version="20.0.0" />
     </requires>
 
     <extension point="xbmc.python.module" library="lib" />
@@ -23,3 +22,4 @@
     </extension>
 
 </addon>
+
