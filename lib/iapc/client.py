@@ -7,7 +7,7 @@ __all__ = ["AddonNotAvailable", "Client", "RequestError"]
 from json import loads
 from uuid import uuid4
 
-from nuttig import addonEnabled, getAddonId
+from nuttig import addonIsEnabled, getAddonId
 
 from .service import Monitor
 
@@ -86,7 +86,7 @@ class Client(object):
 
     def __init__(self, id=None):
         if id:
-            if addonEnabled(id):
+            if addonIsEnabled(id):
                 self.id = id
             else:
                 raise AddonNotAvailable(id)
