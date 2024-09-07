@@ -85,13 +85,9 @@ class Attribute(object):
 class Client(object):
 
     def __init__(self, id=None):
-        if id:
-            if addonIsEnabled(id):
-                self.id = id
-            else:
-                raise AddonNotAvailable(id)
-        else:
-            self.id = getAddonId()
+        if id and (not addonIsEnabled(id)):
+            raise AddonNotAvailable(id)
+        self.id = id or getAddonId()
 
     def __getattr__(self, name):
         return Attribute(self.id, name)
