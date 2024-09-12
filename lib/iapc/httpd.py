@@ -127,10 +127,9 @@ class Server(HTTPServer):
                 yield (path, method.__http_command__, method)
 
     def __init__(self, id, logger=None, timeout=-1):
-        if logger:
-            self.logger = logger.getLogger(f"{logger.component}.httpd")
-        else:
-            self.logger = Logger(id, component="httpd")
+        component = ["httpd"]
+        if logger: component.insert(0, logger.component)
+        self.logger = Logger(id, component=".".join(component))
         self.timeout = None if timeout < 0 else timeout
         self.methods = {}
         for path, command, method in self.__methods__(self):
