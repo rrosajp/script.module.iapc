@@ -35,28 +35,27 @@ class Service(Monitor):
             ):
                 yield f"{key}.{name}" if key else name, method
 
-    def __registerWatcher__(self, id):
-        self.logger.info(f"registering: '{id}'")
-        if id != self.id:
-            self.__watchers__.add(id)
+    #def __registerWatcher__(self, id):
+    #    self.logger.info(f"registering: '{id}'")
+    #    if id != self.id:
+    #        self.__watchers__.add(id)
 
-    def __settingsChanged__(self, id):
-        if id not in self.__watchers__:
-            self.logger.info(f"onSettingsChanged() triggered by: '{id}'")
-            self.onSettingsChanged()
-            # or maybe jut call containerRefresh() (less sketchy ?)
+    #def __settingsChanged__(self, id):
+    #    if id not in self.__watchers__:
+    #        self.logger.info(f"onSettingsChanged() triggered by: '{id}'")
+    #        self.onSettingsChanged()
+    #        # or maybe jut call containerRefresh() (less sketchy ?)
 
     def __init__(self):
         self.id = getAddonId()
         self.logger = Logger(self.id, component="service")
-        self.__watchers__ = set()
-        self.__special_methods__ = {
-            "__registerWatcher__": self.__registerWatcher__,
-            "__settingsChanged__": self.__settingsChanged__
-        }
-        # self.methods = {}
-        # this is a bit silly...
-        self.methods = dict(self.__methods__(self), **self.__special_methods__)
+        self.methods = {}
+        #self.__watchers__ = set()
+        #self.__special_methods__ = {
+        #    "__registerWatcher__": self.__registerWatcher__,
+        #    "__settingsChanged__": self.__settingsChanged__
+        #}
+        #self.methods = dict(self.__methods__(self), **self.__special_methods__)
 
     def serve_forever(self, timeout):
         while not self.waitForAbort(timeout):
@@ -64,20 +63,21 @@ class Service(Monitor):
 
     def serve(self, timeout=-1, **kwargs):
         #self.methods.update(self.__methods__(self), **self.__special_methods__)
+        #__inner_methods__ = {}
         #for key, value in kwargs.items():
-        #    self.methods.update(self.__methods__(value, key))
-        __inner_methods__ = {}
+        #    __inner_methods__.update(self.__methods__(value, key))
+        #self.methods.update(__inner_methods__)
+        self.methods.update(self.__methods__(self))
         for key, value in kwargs.items():
-            __inner_methods__.update(self.__methods__(value, key))
-        self.methods.update(__inner_methods__)
+            self.methods.update(self.__methods__(value, key))
         try:
             self.serve_forever(timeout)
         finally:
-            while __inner_methods__:
-                k, v = __inner_methods__.popitem()
-                del self.methods[k]
-            #self.methods.clear() # clear possible circular references
-            self.__watchers__.clear()
+            self.methods.clear() # clear possible circular references
+            #while __inner_methods__:
+            #    k, v = __inner_methods__.popitem()
+            #    del self.methods[k]
+            #self.__watchers__.clear()
 
     def execute(self, request):
         try:
@@ -96,12 +96,12 @@ class Service(Monitor):
         if sender == self.id:
             self.send(method.split(".", 1)[1], sender, self.execute(data))
 
-    def onSettingsChanged(self):
-        # XXX: do NOT call this method unless you REALLY understand
-        # what you're doing. it might lead you to hair pulling crashes...
-        for watcher in self.__watchers__:
-            self.logger.info(f"notifying: '{watcher}'")
-            try:
-                Client(watcher).__settingsChanged__(self.id)
-            except Exception as error:
-                self.logger.error(error)
+    #def onSettingsChanged(self):
+    #    # XXX: do NOT call this method unless you REALLY understand
+    #    # what you're doing. it might lead you to hair pulling crashes...
+    #    for watcher in self.__watchers__:
+    #        self.logger.info(f"notifying: '{watcher}'")
+    #        try:
+    #            Client(watcher).__settingsChanged__(self.id)
+    #        except Exception as error:
+    #            self.logger.error(error)
