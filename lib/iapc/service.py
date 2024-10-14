@@ -44,6 +44,7 @@ class Service(Monitor):
         if id not in self.__watchers__:
             self.logger.info(f"onSettingsChanged() triggered by: '{id}'")
             self.onSettingsChanged()
+            # or maybe jut call containerRefresh() (less sketchy ?)
 
     def __init__(self):
         self.id = getAddonId()
